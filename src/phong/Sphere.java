@@ -18,7 +18,7 @@ public class Sphere {
         kd = 0.53;
         n = 100;
         hue = 25;
-        saturation = (double) 57 * 255 / 100;
+        saturation = (double) 57 / 100;
     }
 
     public double getZ(double x, double y) {
