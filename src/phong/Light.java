@@ -9,7 +9,7 @@ public class Light {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.intensity = 1.0;
+        this.intensity = 100.0;
     }
 
     public double getX() {
