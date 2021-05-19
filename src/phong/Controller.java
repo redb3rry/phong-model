@@ -6,14 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import static java.lang.Math.abs;
 
 public class Controller {
 
@@ -27,10 +21,10 @@ public class Controller {
         prepareBackground();
         GraphicsContext gc = viewport.getGraphicsContext2D();
         sphere = new Sphere(400, 400, 0, 250);
-        light = new Light(400, 400, 400);
-        Ia = 87;
-        Ka = 0.39;
-        fatt = 0.63;
+        light = new Light(400, 400, 500);
+        Ia = 80;
+        Ka = 0.4;
+        fatt = 0.9;
         draw();
     }
 
@@ -59,6 +53,9 @@ public class Controller {
                     break;
                 case "DIGIT3":
                     sphere.setPlastic();
+                    break;
+                case "DIGIT4":
+                    sphere.setMaterial();
                     break;
                 case "P":
                     light.setIntensity(light.getIntensity()+5);
@@ -103,6 +100,9 @@ public class Controller {
         return vect1.get(0)*vect2.get(0) + vect1.get(1)*vect2.get(1) + vect1.get(2)*vect2.get(2);
     }
 
+    private double getVectorValue(ArrayList<Double> vect){
+        return Math.sqrt(Math.pow(vect.get(0),2) + Math.pow(vect.get(1),2) + Math.pow(vect.get(2),2));
+    }
 
     private void draw() {
         prepareBackground();
@@ -116,13 +116,14 @@ public class Controller {
                     continue;
                 } else {
                     double z = sphere.getZ(x, y);
-                    ArrayList<Double> normalVector = subtractVector(x, y, z, sphere.x, sphere.y, sphere.z);
+                    ArrayList<Double> normalVector = subtractVector(sphere.x, sphere.y, sphere.z, x, y, z);
                     normalVector = normalizeVector(normalVector);
 
-                    ArrayList<Double> lightVector = subtractVector(light.x, light.y, light.z, x, y, z);
+                    ArrayList<Double> lightVector = subtractVector( x, y, z, light.x, light.y, light.z);
                     lightVector = normalizeVector(lightVector);
 
-                    double dot = dotMultiplication(obsVect, lightVector);
+                    double dot = dotMultiplication(obsVect, lightVector)/ (getVectorValue(obsVect)*getVectorValue(lightVector));
+
                     double angle = Math.acos(dot);
 
                     double backgroundPart = Ia * Ka;
